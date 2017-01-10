@@ -1,5 +1,6 @@
 package ainor.com.my.hackernews;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
@@ -25,10 +26,13 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> titles = new ArrayList<>();
+    ArrayList<String> content = new ArrayList<>();
 
     ArrayAdapter mArrayAdapter;
 
     SQLiteDatabase articlesDB;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,27 @@ public class MainActivity extends AppCompatActivity {
             task.execute("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty");
         }catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void updateListView() {
+
+        Cursor c = articlesDB.rawQuery("SELECT * FROM articles", null);
+
+        int contentIndex = c.getColumnIndex("content");
+
+        int titleIndex = c.getColumnIndex("title");
+
+        if (c.moveToFirst()) {
+            titles.clear();
+            content.clear();
+
+            do {
+                titles.add(c.getString(titleIndex));
+                content.add(c.getString(contentIndex));
+            } while (c.moveToNext());
+
+            mArrayAdapter.notifyDataSetChanged();
         }
     }
 
