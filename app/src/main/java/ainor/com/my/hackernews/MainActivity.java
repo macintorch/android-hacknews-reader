@@ -80,8 +80,36 @@ public class MainActivity extends AppCompatActivity {
 
                 JSONArray jsonArray = new JSONArray(result);
 
-                for (int i = 0; i < jsonArray.length();i++) {
-                    Log.i("JSONItem", jsonArray.getString(i));
+                int numberOfItems = 20;
+
+                if (jsonArray.length() < 20 ) {
+                    numberOfItems = jsonArray.length();
+                }
+
+                for (int i = 0; i < numberOfItems;i++) {
+
+                    String articleId = jsonArray.getString(i);
+
+                    url = new URL("https://hacker-news.firebaseio.com/v0/item/"+ articleId+".json?print=pretty");
+
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    in = urlConnection.getInputStream();
+
+                    reader = new InputStreamReader(in);
+
+                    data = reader.read();
+
+                    String articleInfo = "";
+
+                    while (data != -1 ) {
+                        char current = (char) data;
+
+                        articleInfo += current;
+
+                        data = reader.read();
+                    }
+
+                    Log.i("ArticleInfo", articleInfo);
                 }
 
             } catch (MalformedURLException e) {
