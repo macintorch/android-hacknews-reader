@@ -7,6 +7,9 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -75,10 +78,18 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i("URLContent", result);
 
+                JSONArray jsonArray = new JSONArray(result);
+
+                for (int i = 0; i < jsonArray.length();i++) {
+                    Log.i("JSONItem", jsonArray.getString(i));
+                }
+
             } catch (MalformedURLException e) {
 
                 e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
             return null;
