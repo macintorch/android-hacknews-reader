@@ -1,5 +1,7 @@
 package ainor.com.my.hackernews;
 
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayAdapter mArrayAdapter;
 
+    SQLiteDatabase articlesDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
         mArrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, titles);
 
         newsListView.setAdapter(mArrayAdapter);
+
+        articlesDB = this.openOrCreateDatabase("Articles", MODE_PRIVATE,null);
+
+        articlesDB.execSQL("CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, articleId INTEGER, title VARCHAR, content VARCHAR)");
+
+
 
         DownloadTask task = new DownloadTask();
 
@@ -87,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
                     numberOfItems = jsonArray.length();
                 }
 
+                articlesDB.execSQL("DELETE FROM articles");
+
                 for (int i = 0; i < numberOfItems;i++) {
 
                     String articleId = jsonArray.getString(i);
@@ -137,6 +149,16 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         Log.i("ArticleContent", articleContent);
+
+                        String sql = "INSERT INTO articles (articleId, title, content) VALUES (? , ? , ?)";
+
+                        SQLiteStatement statement = articlesDB.compileStatement(sql);
+
+                        statement.bindString(1, articleId);
+                        statement.bindString(2, articleTitle);
+                        statement.bindString(3, articleContent);
+
+                        statement.execute();
                     }
 
                 }
