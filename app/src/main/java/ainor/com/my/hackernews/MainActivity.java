@@ -112,11 +112,14 @@ public class MainActivity extends AppCompatActivity {
 
                     JSONObject jsonObject = new JSONObject(articleInfo);
 
-                    String articleTitle = jsonObject.getString("title");
+                    if (!jsonObject.isNull("title") && (!jsonObject.isNull("url"))) {
+                        String articleTitle = jsonObject.getString("title");
 
-                    String articleURL = jsonObject.getString("url");
+                        String articleURL = jsonObject.getString("url");
 
-                    Log.i("ArticleInfo", articleTitle + articleURL);
+                        Log.i("ArticleInfo", articleTitle + articleURL);
+                    }
+
                 }
 
             } catch (MalformedURLException e) {
