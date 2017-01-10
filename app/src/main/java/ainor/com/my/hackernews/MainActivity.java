@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,7 +110,13 @@ public class MainActivity extends AppCompatActivity {
                         data = reader.read();
                     }
 
-                    Log.i("ArticleInfo", articleInfo);
+                    JSONObject jsonObject = new JSONObject(articleInfo);
+
+                    String articleTitle = jsonObject.getString("title");
+
+                    String articleURL = jsonObject.getString("url");
+
+                    Log.i("ArticleInfo", articleTitle + articleURL);
                 }
 
             } catch (MalformedURLException e) {
